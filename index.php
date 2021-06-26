@@ -780,6 +780,6 @@ if(!isset($_SESSION['username_database']))
              return re.test(String(email).toLowerCase());
         }
         </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDFMYxkMKHwdhEu5EE3JCSnpRCKSHffOs&callback=initMap&libraries=&v=weekly" async></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key={API_KEY}&callback=initMap&libraries=&v=weekly" async></script>
     </body>
 </html>
