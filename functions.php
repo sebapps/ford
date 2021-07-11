@@ -41,7 +41,7 @@ function get_access_token() {
         // Refresh tokens expire in 90 days - set it to 85 days
         $refresh_token_expire = date("Y-m-d H:i:s", strtotime("+85 days"));
         
-        $command = 'curl -d "grant_type=authorization_code&client_id=30990062-9618-40e1-a27b-7c6bcb23658a&client_secret=T_Wk41dx2U9v22R5sQD4Z_E1u-l2B-jXHE&code='.$code.'" -H "Content-Type: application/x-www-form-urlencoded" -X POST https://dah2vb2cprod.b2clogin.com/914d88b1-3523-4bf6-9be4-1b96b4f6f919/oauth2/v2.0/token?p=B2C_1A_signup_signin_common';
+        $command = 'curl -d "grant_type=authorization_code&client_id={client_id}&client_secret={client_secret}&code='.$code.'" -H "Content-Type: application/x-www-form-urlencoded" -X POST https://dah2vb2cprod.b2clogin.com/914d88b1-3523-4bf6-9be4-1b96b4f6f919/oauth2/v2.0/token?p=B2C_1A_signup_signin_common';
 
         $response = shell_exec($command);
         $json = json_decode($response);
@@ -63,7 +63,7 @@ function get_access_token() {
             // Access tokens expire in 20 minutes - set it to 16 minutes in future
             $access_token_expire = date("Y-m-d H:i:s", strtotime("+16 minutes"));
         
-            $command = 'curl -d "grant_type=refresh_token&refresh_token='.$refresh_token.'&client_id=30990062-9618-40e1-a27b-7c6bcb23658a&client_secret=T_Wk41dx2U9v22R5sQD4Z_E1u-l2B-jXHE" -H "Content-Type: application/x-www-form-urlencoded" -X POST https://dah2vb2cprod.b2clogin.com/914d88b1-3523-4bf6-9be4-1b96b4f6f919/oauth2/v2.0/token?p=B2C_1A_signup_signin_common';
+            $command = 'curl -d "grant_type=refresh_token&refresh_token='.$refresh_token.'&client_id={client_id}&client_secret={client_secret}" -H "Content-Type: application/x-www-form-urlencoded" -X POST https://dah2vb2cprod.b2clogin.com/914d88b1-3523-4bf6-9be4-1b96b4f6f919/oauth2/v2.0/token?p=B2C_1A_signup_signin_common';
         
             $response = shell_exec($command);
             $json = json_decode($response);
@@ -101,7 +101,7 @@ function get_vehicle_id() {
     if($vehicle_id == "") {
         
         $access_token = get_access_token();
-        $command = 'curl -H "Accept: application/json" -H "Content-Type: application/json" -H "api-version: 2020-06-01" -H "Application-Id: afdc085b-377a-4351-b23e-5e1d35fb3700" -H "Authorization: Bearer '.$access_token.'" https://api.mps.ford.com/api/fordconnect/vehicles/v1';
+        $command = 'curl -H "Accept: application/json" -H "Content-Type: application/json" -H "api-version: {api_version}" -H "Application-Id: {application_id}" -H "Authorization: Bearer '.$access_token.'" https://api.mps.ford.com/api/fordconnect/vehicles/v1';
 
         $response = shell_exec($command);
         $json = json_decode($response);
@@ -120,7 +120,7 @@ function get_vehicle_id() {
     }
     /*if($vehicle_image == "") {
         $access_token = get_access_token();
-        $command = 'curl -H "Accept: application/json" -H "Content-Type: application/json" -H "api-version: 2020-06-01" -H "Application-Id: afdc085b-377a-4351-b23e-5e1d35fb3700" -H "Authorization: Bearer '.$access_token.'" https://api.mps.ford.com/api/fordconnect/vehicles/v1/'.$vehicle_id.'/images/thumbnail?make=Ford&model=&year=2019';
+        $command = 'curl -H "Accept: application/json" -H "Content-Type: application/json" -H "api-version: {api_version}" -H "Application-Id: {application_id}" -H "Authorization: Bearer '.$access_token.'" https://api.mps.ford.com/api/fordconnect/vehicles/v1/'.$vehicle_id.'/images/thumbnail?make=Ford&model=&year=2019';
 
         $response = shell_exec($command);
         echo $response; exit;
@@ -157,6 +157,9 @@ function get_vehicle_image() {
         $row = mysqli_fetch_array($result);
         $vehicle_image = $row['vehicle_image'];
     }
+    else
+        return "https://mkpuertorico.com/ford/images/ford_thumb.png";
+        
     return $vehicle_image;
 }
 
@@ -169,7 +172,7 @@ function get_status() {
     // Get the access token
     $access_token = get_access_token();
     
-    $command = 'curl -H "Application-Id: afdc085b-377a-4351-b23e-5e1d35fb3700" -H "api-version: 2020-06-01" -H "Authorization: Bearer '.$access_token.'" https://api.mps.ford.com/api/fordconnect/vehicles/v1/'.$vehicle_id;
+    $command = 'curl -H "Application-Id: {application_id}" -H "api-version: {api_version}" -H "Authorization: Bearer '.$access_token.'" https://api.mps.ford.com/api/fordconnect/vehicles/v1/'.$vehicle_id;
     
     $response = shell_exec($command);
     //$json = json_decode($response);
@@ -187,7 +190,7 @@ function get_location() {
     // Get the access token
     $access_token = get_access_token();
     
-    $command = 'curl -H "Application-Id: afdc085b-377a-4351-b23e-5e1d35fb3700" -H "api-version: 2020-06-01" -H "Authorization: Bearer '.$access_token.'" https://api.mps.ford.com/api/fordconnect/vehicles/v1/'.$vehicle_id.'/location';
+    $command = 'curl -H "Application-Id: {application_id}" -H "api-version: {api_version}" -H "Authorization: Bearer '.$access_token.'" https://api.mps.ford.com/api/fordconnect/vehicles/v1/'.$vehicle_id.'/location';
     
     $response = shell_exec($command);
     //$json = json_decode($response);
@@ -204,7 +207,7 @@ function refresh_location() {
     // Get the access token
     $access_token = get_access_token();
     
-    $command = 'curl -H "Application-Id: afdc085b-377a-4351-b23e-5e1d35fb3700" -H "api-version: 2020-06-01" -H "Authorization: Bearer '.$access_token.'" -X POST https://api.mps.ford.com/api/fordconnect/vehicles/v1/'.$vehicle_id.'/location';
+    $command = 'curl -H "Application-Id: {application_id}" -H "api-version: {api_version}" -H "Authorization: Bearer '.$access_token.'" -X POST https://api.mps.ford.com/api/fordconnect/vehicles/v1/'.$vehicle_id.'/location';
     
     $response = shell_exec($command);
     $json = json_decode($response);
